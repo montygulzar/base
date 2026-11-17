@@ -1,10 +1,11 @@
 # base — OSINT investigation platform
 
 Unified, modular, extensible OSINT collection + correlation + reporting
-platform. **83 collection modules**, **~45 integration adapters**, two
-subject-type extensions (BTC + ETH), one docker compose, a Next.js
-dashboard, a Python backend, STIX / MISP / GraphML / GEXF / PDF / HTML /
-CSV / JSON / Markdown exports and a headless CLI.
+platform. **100 collection modules**, **~45 integration adapters**,
+crypto subject-type extensions (BTC + ETH), one docker compose, a
+Next.js dashboard, a Python backend, STIX / MISP / GraphML / GEXF /
+GeoJSON / Mermaid / PDF / HTML / CSV / JSON / Markdown / ZIP exports,
+a TAXII 2.1 server, a Prometheus `/metrics` endpoint, and a headless CLI.
 
 ## Quick start
 
@@ -20,7 +21,7 @@ docker compose up --build
 
 Default admin: `admin@base.app / admin` — change it.
 
-## Module catalogue — 83 modules
+## Module catalogue — 100 modules
 
 | Area | Modules |
 | --- | --- |
@@ -31,7 +32,10 @@ Default admin: `admin@base.app / admin` — change it.
 | **Identity** | `username` (~50 sites), `github_user`, `github_dorks`, `bluesky`, `mastodon`, `reddit_user`, `hackernews`, `gravatar`, `email`, `emailrep`, `email_permute`, `hibp_pastes`, `pgp_keys`, `phone`, `company`, `opensanctions`, `ahmia` |
 | **Media / docs** | `media`, `reverse_image`, `documents`, `metagoofil` |
 | **Pivot / defence** | `typosquat`, `tld_twist`, `package_typosquat`, `bugbounty`, `tranco`, `webhook`, `opencti_push`, `taxii`, `ipapi`, `ip_api_com`, `s3_enum`, `cloud_bucket` |
-| **Crypto** | `btc_addr` (mempool.space), `eth_addr` (Blockscout) |
+| **Crypto** | `btc_addr`, `btc_tx` (mempool.space), `eth_addr` (Blockscout) |
+| **Vulnerability feeds** | `cve_search`, `nvd_cpe`, `epss`, `kev`, `osv`, `exploitdb` |
+| **Mail hygiene** | `smtp_banner`, `dns_auth`, `cert_expiry`, `tls_scan`, `caa` |
+| **Defensive** | `url_canon`, `onion_validate`, `web_perf`, `homograph_gen`, `sitemap` |
 
 Every module uses a shared `Module(key, name, subject_types, run)` contract
 and persists `findings`, `entities`, and typed, provenanced `relationships`

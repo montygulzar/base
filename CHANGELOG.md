@@ -5,7 +5,7 @@ entry maps to a git commit on `main`.
 
 ## Unreleased (current HEAD)
 
-### Module count: 83
+### Module count: 100
 
 ### Highlights
 - Crypto OSINT: `btc_addr` (mempool.space), `eth_addr` (Blockscout), with
