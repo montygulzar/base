@@ -75,6 +75,9 @@ from .api import module_stats as api_module_stats, merge as api_merge, version a
 app.include_router(api_module_stats.router, prefix="/api/module_stats", tags=["module-stats"])
 app.include_router(api_merge.router, prefix="/api/merge", tags=["merge"])
 app.include_router(api_version.router, prefix="/api/version", tags=["version"])
+from .api import zip_export as api_zip, fuzzy as api_fuzzy
+app.include_router(api_zip.router, prefix="/api/zip", tags=["zip"])
+app.include_router(api_fuzzy.router, prefix="/api/fuzzy", tags=["fuzzy"])
 
 
 @app.get("/api/health")

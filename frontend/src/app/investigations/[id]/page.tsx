@@ -52,6 +52,7 @@ export default function Investigation({ params }: { params: { id: string } }) {
           <a className="btn" href={`${API_URL}/api/exports/${id}.graphml`} target="_blank">graphml</a>
           <a className="btn" href={`${API_URL}/api/exports/${id}.gexf`} target="_blank">gexf</a>
           <a className="btn" href={`${API_URL}/api/geojson/${id}.geojson`} target="_blank">geojson</a>
+          <a className="btn-primary" href={`${API_URL}/api/zip/${id}.zip`} target="_blank">zip all</a>
         </div>
       </div>
 
