@@ -24,7 +24,7 @@ class Investigation(Base):
     id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
     name: Mapped[str] = mapped_column(String)
     description: Mapped[str] = mapped_column(Text, default="")
-    status: Mapped[str] = mapped_column(String, default="draft")  # draft|running|completed|error
+    status: Mapped[str] = mapped_column(String, default="draft")  # draft|running|completed|error|sealed
     owner_id: Mapped[str] = mapped_column(String, ForeignKey("users.id"))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

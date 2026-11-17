@@ -105,9 +105,11 @@ from .api import zip_export as api_zip, fuzzy as api_fuzzy, apikeys as api_apike
 app.include_router(api_zip.router, prefix="/api/zip", tags=["zip"])
 app.include_router(api_fuzzy.router, prefix="/api/fuzzy", tags=["fuzzy"])
 app.include_router(api_apikeys.router, prefix="/api/apikeys", tags=["apikeys"])
-from .api import degrees as api_degrees, backup as api_backup
+from .api import degrees as api_degrees, backup as api_backup, mermaid as api_mermaid, seal as api_seal
 app.include_router(api_degrees.router, prefix="/api/degrees", tags=["degrees"])
 app.include_router(api_backup.router, prefix="/api/backup", tags=["backup"])
+app.include_router(api_mermaid.router, prefix="/api/mermaid", tags=["mermaid"])
+app.include_router(api_seal.router, prefix="/api/seal", tags=["seal"])
 
 
 @app.get("/api/health")
