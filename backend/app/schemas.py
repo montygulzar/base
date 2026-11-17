@@ -3,7 +3,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, EmailStr, Field
 
 
-SubjectType = Literal["domain", "ip", "email", "username", "company", "media", "document", "url"]
+SubjectType = Literal["domain", "ip", "email", "username", "company", "media", "document", "url", "phone"]
 
 
 class UserCreate(BaseModel):

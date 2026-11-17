@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .config import get_settings
-from .api import auth as api_auth, investigations, modules as api_modules, integrations as api_integrations, graph, reports, ws, transforms, timeline, misp, stix, schedules, audit
+from .api import auth as api_auth, investigations, modules as api_modules, integrations as api_integrations, graph, reports, ws, transforms, timeline, misp, stix, schedules, audit, health as api_health
 
 log = logging.getLogger("base")
 logging.basicConfig(level=get_settings().LOG_LEVEL)
@@ -39,6 +39,7 @@ app.include_router(misp.router, prefix="/api/misp", tags=["misp"])
 app.include_router(stix.router, prefix="/api/stix", tags=["stix"])
 app.include_router(schedules.router, prefix="/api/schedules", tags=["schedules"])
 app.include_router(audit.router, prefix="/api/audit", tags=["audit"])
+app.include_router(api_health.router, prefix="/api/sources", tags=["sources"])
 
 
 @app.get("/api/health")

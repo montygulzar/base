@@ -38,6 +38,8 @@ class Settings(BaseSettings):
     FOFA_API_KEY: str = ""
     ZOOMEYE_API_KEY: str = ""
     COMPANIESHOUSE_API_KEY: str = ""
+    GITHUB_TOKEN: str = ""
+    NUMVERIFY_API_KEY: str = ""
 
     HTTP_TIMEOUT_SECONDS: int = 20
     MAX_CONCURRENT_COLLECTORS: int = 8

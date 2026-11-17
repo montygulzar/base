@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import ReactFlow, { Background, Controls, MiniMap, Node, Edge } from "reactflow";
 import "reactflow/dist/style.css";
+import dagre from "dagre";
 import { api, fetcher } from "@/lib/api";
 
 type Graph = { nodes: any[]; edges: any[] };
@@ -26,22 +27,26 @@ export default function GraphView({ investigationId }: { investigationId: string
   }
   const { nodes, edges } = useMemo(() => {
     if (!data) return { nodes: [], edges: [] };
-    const positions = circular(data.nodes.length);
-    const nn: Node[] = data.nodes
-      .filter(n => !filter || n.value.toLowerCase().includes(filter.toLowerCase()) || n.type === filter)
-      .map((n, i) => ({
-        id: n.id, position: positions[i], data: { label: `${n.type}:${n.value.slice(0, 30)}` },
-        style: {
-          background: "#11141b", color: "#d9dde3",
-          border: `1px solid ${COLORS[n.type] ?? "#242b38"}`,
-          fontFamily: "ui-monospace,monospace", fontSize: 11, padding: 4, borderRadius: 6,
-        },
-      }));
-    const ee: Edge[] = data.edges.map(e => ({
-      id: e.id, source: e.src, target: e.dst, label: e.type,
-      style: { stroke: "#2b3240" },
-      labelStyle: { fill: "#8a93a3", fontFamily: "ui-monospace,monospace", fontSize: 10 },
+    const kept = data.nodes.filter(n => !filter || n.value.toLowerCase().includes(filter.toLowerCase()) || n.type === filter);
+    const keptIds = new Set(kept.map(k => k.id));
+    const positions = layout(kept, data.edges.filter(e => keptIds.has(e.src) && keptIds.has(e.dst)));
+    const nn: Node[] = kept.map(n => ({
+      id: n.id, position: positions[n.id] ?? { x: 0, y: 0 },
+      data: { label: `${n.type}:${n.value.slice(0, 30)}` },
+      style: {
+        background: "#11141b", color: "#d9dde3",
+        border: `1px solid ${COLORS[n.type] ?? "#242b38"}`,
+        fontFamily: "ui-monospace,monospace", fontSize: 11, padding: 6, borderRadius: 6,
+        width: 220,
+      },
     }));
+    const ee: Edge[] = data.edges
+      .filter(e => keptIds.has(e.src) && keptIds.has(e.dst))
+      .map(e => ({
+        id: e.id, source: e.src, target: e.dst, label: e.type,
+        style: { stroke: "#2b3240" },
+        labelStyle: { fill: "#8a93a3", fontFamily: "ui-monospace,monospace", fontSize: 10 },
+      }));
     return { nodes: nn, edges: ee };
   }, [data, filter]);
 
@@ -78,10 +83,17 @@ export default function GraphView({ investigationId }: { investigationId: string
   );
 }
 
-function circular(n: number) {
-  const R = Math.max(140, 40 * Math.sqrt(n));
-  return Array.from({ length: n }, (_, i) => {
-    const a = (2 * Math.PI * i) / Math.max(n, 1);
-    return { x: Math.cos(a) * R + R, y: Math.sin(a) * R + R };
+function layout(nodes: any[], edges: any[]): Record<string, { x: number; y: number }> {
+  const g = new dagre.graphlib.Graph();
+  g.setGraph({ rankdir: "LR", nodesep: 24, ranksep: 90, marginx: 12, marginy: 12 });
+  g.setDefaultEdgeLabel(() => ({}));
+  nodes.forEach(n => g.setNode(n.id, { width: 220, height: 32 }));
+  edges.forEach(e => g.setEdge(e.src, e.dst));
+  dagre.layout(g);
+  const out: Record<string, { x: number; y: number }> = {};
+  nodes.forEach(n => {
+    const p = g.node(n.id);
+    if (p) out[n.id] = { x: p.x - 110, y: p.y - 16 };
   });
+  return out;
 }
