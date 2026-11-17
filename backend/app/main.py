@@ -62,9 +62,10 @@ app.include_router(api_fork.router, prefix="/api/fork", tags=["fork"])
 app.include_router(api_jwt_tool.router, prefix="/api/jwt", tags=["jwt"])
 app.include_router(api_detect.router, prefix="/api/detect", tags=["detect"])
 app.include_router(api_recent.router, prefix="/api/recent", tags=["recent"])
-from .api import retention as api_retention, triage as api_triage
+from .api import retention as api_retention, triage as api_triage, bulk as api_bulk
 app.include_router(api_retention.router, prefix="/api/retention", tags=["retention"])
 app.include_router(api_triage.router, prefix="/api/triage", tags=["triage"])
+app.include_router(api_bulk.router, prefix="/api/bulk", tags=["bulk"])
 
 
 @app.get("/api/health")
