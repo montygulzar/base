@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+.venv/
+node_modules/
+.next/
+dist/
+build/
+*.egg-info/
+.coverage
+.pytest_cache/
+/data/
+*.sqlite
+.DS_Store
