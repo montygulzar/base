@@ -15,5 +15,6 @@ from . import (  # noqa: F401
     caa, s3_enum, ipapi, cloud_bucket, pgp_keys,
     cloud_provider, url_unshorten,
     github_dorks, archive_whois, asn_prefixes, spamhaus_dbl,
+    pulsedive, ip_api_com, reverse_ns,
 )
 from . import plugins  # noqa: F401 — late-binding plugin discovery
