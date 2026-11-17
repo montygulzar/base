@@ -71,8 +71,10 @@ app.include_router(api_geojson.router, prefix="/api/geojson", tags=["geojson"])
 app.include_router(api_jobs.router, prefix="/api/jobs", tags=["jobs"])
 app.include_router(api_path.router, prefix="/api/path", tags=["path"])
 app.include_router(api_inv_tags.router, prefix="/api/inv_tags", tags=["inv-tags"])
-from .api import module_stats as api_module_stats
+from .api import module_stats as api_module_stats, merge as api_merge, version as api_version
 app.include_router(api_module_stats.router, prefix="/api/module_stats", tags=["module-stats"])
+app.include_router(api_merge.router, prefix="/api/merge", tags=["merge"])
+app.include_router(api_version.router, prefix="/api/version", tags=["version"])
 
 
 @app.get("/api/health")
