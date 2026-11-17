@@ -14,7 +14,7 @@ class UserCreate(BaseModel):
 
 class UserOut(BaseModel):
     id: str
-    email: EmailStr
+    email: str
     role: str
     class Config: from_attributes = True
 

@@ -19,9 +19,9 @@ log = logging.getLogger("orchestrator")
 
 # default module selection per subject type
 PLAN: dict[str, list[str]] = {
-    "domain":   ["domain", "web", "cti"],
-    "url":      ["web", "domain", "cti"],
-    "ip":       ["ip", "cti"],
+    "domain":   ["domain", "web", "cti", "censys", "urlscan"],
+    "url":      ["web", "domain", "cti", "urlscan"],
+    "ip":       ["ip", "cti", "censys"],
     "email":    ["email"],
     "username": ["username"],
     "company":  ["company"],
@@ -116,10 +116,9 @@ async def plan_and_run(investigation_id: str, module_keys: list[str] | None = No
             subs = [x for x in subs if x.id in subject_ids]
         job_ids: list[str] = []
         for sub in subs:
-            modules = module_keys or PLAN.get(sub.type, [])
-            modules = [m for m in modules if m in REGISTRY and sub.type in REGISTRY[m].subject_types or m in REGISTRY and not REGISTRY[m].subject_types]
-            if not modules and module_keys is None:
-                modules = PLAN.get(sub.type, [])
+            requested = module_keys or PLAN.get(sub.type, [])
+            modules = [m for m in requested if m in REGISTRY
+                       and (sub.type in REGISTRY[m].subject_types or not REGISTRY[m].subject_types)]
             for mk in modules:
                 j = Job(investigation_id=investigation_id, subject_id=sub.id, module=mk, status="queued")
                 db.add(j)

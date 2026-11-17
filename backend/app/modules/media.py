@@ -3,8 +3,6 @@ from __future__ import annotations
 import json
 import subprocess
 from pathlib import Path
-from PIL import Image
-import imagehash
 from ..utils.hashing import sha256_file
 from .base import Module, Finding, Entity, CollectionResult, RunContext, register
 
@@ -43,6 +41,8 @@ async def run(subject: str, ctx: RunContext) -> CollectionResult:
         out.findings.append(Finding("exiftool", "gps", gps, 0.85))
 
     try:
+        from PIL import Image
+        import imagehash
         with Image.open(p) as im:
             ph = str(imagehash.phash(im))
             dh = str(imagehash.dhash(im))

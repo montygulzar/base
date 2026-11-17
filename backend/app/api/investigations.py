@@ -1,7 +1,7 @@
 import asyncio
 import os
 from pathlib import Path
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from ..auth import current_user
@@ -10,6 +10,7 @@ from ..config import get_settings
 from ..models import User, Investigation, Subject, Job, Finding, AuditLog
 from ..schemas import InvestigationCreate, InvestigationOut, SubjectIn, SubjectOut, JobOut, FindingOut, RunRequest
 from ..orchestrator import plan_and_run
+from ..queue import enqueue_run
 
 router = APIRouter()
 
@@ -89,15 +90,14 @@ async def upload(inv_id: str, kind: str = Form(...), file: UploadFile = File(...
 
 
 @router.post("/{inv_id}/run")
-async def run(inv_id: str, req: RunRequest, bg: BackgroundTasks,
+async def run(inv_id: str, req: RunRequest,
               u: User = Depends(current_user), db: AsyncSession = Depends(get_session)):
     inv = await db.get(Investigation, inv_id)
     if not inv: raise HTTPException(404, "not found")
     db.add(AuditLog(user_id=u.id, action="investigation.run", target=inv_id,
                     detail={"modules": req.modules, "subject_ids": req.subject_ids}))
     await db.commit()
-    bg.add_task(asyncio.create_task, plan_and_run(inv_id, req.modules, req.subject_ids))
-    # fire-and-return; use ws + jobs endpoint for progress
+    await enqueue_run(inv_id, req.modules, req.subject_ids)
     return {"status": "scheduled", "investigation_id": inv_id}
 
 

@@ -12,7 +12,6 @@ import socket
 from datetime import datetime
 import httpx
 import dns.asyncresolver
-import whois
 from ..utils.validators import normalise_domain, is_domain
 from .base import Module, Finding, Entity, Relationship, CollectionResult, RunContext, register
 from ..config import get_settings
@@ -32,6 +31,7 @@ async def _dns(domain: str, rtype: str) -> list[str]:
 async def _whois(domain: str) -> dict:
     loop = asyncio.get_running_loop()
     try:
+        import whois  # lazy
         w = await loop.run_in_executor(None, whois.whois, domain)
         return {k: (v.isoformat() if hasattr(v, "isoformat") else v) for k, v in dict(w).items() if v and not callable(v)}
     except Exception as e:
@@ -47,8 +47,11 @@ async def _crtsh(client: httpx.AsyncClient, domain: str) -> list[str]:
         for row in r.json():
             for name in (row.get("name_value") or "").splitlines():
                 name = name.strip().lower().lstrip("*.")
-                if name.endswith(domain) and is_domain(name):
-                    subs.add(name)
+                if "@" in name or " " in name:
+                    continue
+                if name.endswith("." + domain) or name == domain:
+                    if is_domain(name):
+                        subs.add(name)
         return sorted(subs)
     except Exception:
         return []

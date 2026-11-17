@@ -45,4 +45,11 @@ REGISTRY: dict[str, dict] = {
                         "description": "AlienVault OTX indicators (enriched with key).", "docs": "https://otx.alienvault.com/api"},
     "opencorporates":  {"configured": bool(s.OPENCORPORATES_API_KEY), "scope": ["corporate"],
                         "description": "OpenCorporates company search.", "docs": "https://api.opencorporates.com"},
+    "censys":          {"configured": bool(s.CENSYS_API_ID and s.CENSYS_API_SECRET),
+                        "scope": ["exposure", "passive_dns"],
+                        "description": "Censys hosts/certs (basic auth).",
+                        "docs": "https://search.censys.io/api"},
+    "misp_export":     {"configured": True, "scope": ["export"],
+                        "description": "MISP event export (v2 JSON).",
+                        "docs": "https://www.misp-project.org/openapi/"},
 }

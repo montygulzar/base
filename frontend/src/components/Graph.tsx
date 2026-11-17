@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import ReactFlow, { Background, Controls, MiniMap, Node, Edge } from "reactflow";
 import "reactflow/dist/style.css";
-import { fetcher } from "@/lib/api";
+import { api, fetcher } from "@/lib/api";
 
 type Graph = { nodes: any[]; edges: any[] };
 
@@ -14,8 +14,16 @@ const COLORS: Record<string, string> = {
 };
 
 export default function GraphView({ investigationId }: { investigationId: string }) {
-  const { data } = useSWR<Graph>(`/api/graph/${investigationId}`, fetcher, { refreshInterval: 4000 });
+  const { data, mutate } = useSWR<Graph>(`/api/graph/${investigationId}`, fetcher, { refreshInterval: 4000 });
   const [filter, setFilter] = useState<string>("");
+  const [sel, setSel] = useState<any | null>(null);
+
+  async function expand(entityId: string, modules: string[] | null = null) {
+    await api(`/api/transforms/${investigationId}/expand/${entityId}`, {
+      method: "POST", body: JSON.stringify(modules),
+    });
+    setTimeout(() => mutate(), 2000);
+  }
   const { nodes, edges } = useMemo(() => {
     if (!data) return { nodes: [], edges: [] };
     const positions = circular(data.nodes.length);
@@ -45,12 +53,26 @@ export default function GraphView({ investigationId }: { investigationId: string
           {data?.nodes.length ?? 0} nodes • {data?.edges.length ?? 0} edges
         </div>
       </div>
-      <div className="flex-1">
-        <ReactFlow nodes={nodes} edges={edges} fitView>
+      <div className="flex-1 relative">
+        <ReactFlow nodes={nodes} edges={edges} fitView
+                   onNodeClick={(_, n) => setSel(data?.nodes.find(x => x.id === n.id) ?? null)}>
           <Background color="#1c212c" gap={16} />
           <Controls />
           <MiniMap nodeColor={() => "#242b38"} maskColor="rgba(11,13,18,.7)" />
         </ReactFlow>
+        {sel && (
+          <div className="absolute top-2 right-2 card p-3 w-72 text-xs font-mono">
+            <div className="flex justify-between">
+              <div><span className="text-mute">{sel.type}</span> <span className="text-acc">{sel.value}</span></div>
+              <button className="text-mute" onClick={() => setSel(null)}>×</button>
+            </div>
+            <div className="text-mute mt-1">confidence {sel.confidence.toFixed(2)}</div>
+            <pre className="mt-2 whitespace-pre-wrap text-ink/80 max-h-32 overflow-auto">{JSON.stringify(sel.attributes, null, 2)}</pre>
+            {["domain","ip","url","email","username"].includes(sel.type) && (
+              <button className="btn-primary w-full mt-2" onClick={() => expand(sel.id)}>expand (run modules)</button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

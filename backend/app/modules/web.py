@@ -2,8 +2,8 @@
 from __future__ import annotations
 from urllib.parse import urlparse, urljoin
 import httpx
-from bs4 import BeautifulSoup
 from ..utils.validators import is_domain, normalise_domain
+from ..utils.ssrf import assert_public, SSRFBlocked
 from ..config import get_settings
 from .base import Module, Finding, Entity, Relationship, CollectionResult, RunContext, register
 
@@ -28,6 +28,11 @@ async def run(subject: str, ctx: RunContext) -> CollectionResult:
     host = urlparse(url).hostname or ""
     if not host:
         out.findings.append(Finding("web", "invalid_input", {"input": subject}, 0.1))
+        return out
+    try:
+        assert_public(url)
+    except SSRFBlocked as e:
+        out.findings.append(Finding("web", "ssrf_blocked", {"url": url, "reason": str(e)}, 0.0))
         return out
     out.entities.append(Entity("url", url, {}, 0.9))
     if is_domain(host):
@@ -57,7 +62,8 @@ async def run(subject: str, ctx: RunContext) -> CollectionResult:
                     tech.append(name)
             out.findings.append(Finding("web", "tech_fingerprint", {"stack": tech}, 0.75 if tech else 0.2))
 
-            soup = BeautifulSoup(body, "lxml")
+            from bs4 import BeautifulSoup  # lazy
+            soup = BeautifulSoup(body, "html.parser")
             title = soup.title.string.strip() if soup.title and soup.title.string else ""
             metas = {m.get("name") or m.get("property"): m.get("content") for m in soup.find_all("meta") if m.get("content")}
             links = sorted({urljoin(url, a.get("href")) for a in soup.find_all("a", href=True)})

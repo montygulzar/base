@@ -2,9 +2,6 @@
 from __future__ import annotations
 import re
 from pathlib import Path
-import fitz  # pymupdf
-from docx import Document as DocxDocument
-from openpyxl import load_workbook
 from ..utils.hashing import sha256_file
 from .base import Module, Finding, Entity, Relationship, CollectionResult, RunContext, register
 
@@ -14,6 +11,7 @@ DOMAIN_RE = re.compile(r"\b(?:[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?\.)+[a-z]{2,}
 
 
 def _pdf(path: str) -> tuple[dict, str]:
+    import fitz  # pymupdf — lazy
     doc = fitz.open(path)
     meta = dict(doc.metadata or {})
     meta["page_count"] = doc.page_count
@@ -23,6 +21,7 @@ def _pdf(path: str) -> tuple[dict, str]:
 
 
 def _docx(path: str) -> tuple[dict, str]:
+    from docx import Document as DocxDocument  # lazy
     d = DocxDocument(path)
     cp = d.core_properties
     meta = {
@@ -36,6 +35,7 @@ def _docx(path: str) -> tuple[dict, str]:
 
 
 def _xlsx(path: str) -> tuple[dict, str]:
+    from openpyxl import load_workbook  # lazy
     wb = load_workbook(path, data_only=True, read_only=True)
     p = wb.properties
     meta = {
