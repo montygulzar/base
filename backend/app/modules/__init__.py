@@ -14,6 +14,6 @@ from . import (  # noqa: F401
     opensanctions, ahmia, hibp_pastes, url_liveness,
     caa, s3_enum, ipapi, cloud_bucket, pgp_keys,
     cloud_provider, url_unshorten,
-    github_dorks, archive_whois,
+    github_dorks, archive_whois, asn_prefixes, spamhaus_dbl,
 )
 from . import plugins  # noqa: F401 — late-binding plugin discovery

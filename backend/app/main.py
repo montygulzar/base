@@ -51,9 +51,10 @@ app.include_router(graph_query.router, prefix="/api/graph", tags=["graph"])
 app.include_router(api_notes.router, prefix="/api/notes", tags=["notes"])
 app.include_router(api_templates.router, prefix="/api/templates", tags=["templates"])
 app.include_router(api_enrich.router, prefix="/api/enrich", tags=["enrich"])
-from .api import taxii_server as api_taxii_server, metrics as api_metrics
+from .api import taxii_server as api_taxii_server, metrics as api_metrics, share as api_share
 app.include_router(api_taxii_server.router, prefix="/api/taxii_server", tags=["taxii-server"])
 app.include_router(api_metrics.router, tags=["metrics"])
+app.include_router(api_share.router, prefix="/api/share", tags=["share"])
 
 
 @app.get("/api/health")
