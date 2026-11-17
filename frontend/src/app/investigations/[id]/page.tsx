@@ -5,6 +5,7 @@ import { api, fetcher, API_URL, getToken } from "@/lib/api";
 import Graph from "@/components/Graph";
 import EntityChart from "@/components/EntityChart";
 import ScreenshotGallery from "@/components/ScreenshotGallery";
+import GeoMap from "@/components/GeoMap";
 import Link from "next/link";
 
 type Job = { id: string; module: string; status: string; error: string; result: any };
@@ -77,6 +78,9 @@ export default function Investigation({ params }: { params: { id: string } }) {
           <EntityChart invId={id} />
           <div className="col-span-2">
             <ScreenshotGallery invId={id} />
+          </div>
+          <div className="col-span-2">
+            <GeoMap invId={id} />
           </div>
         </div>
       )}
