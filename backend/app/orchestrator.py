@@ -22,6 +22,7 @@ PLAN: dict[str, list[str]] = {
     "domain":   ["domain", "web", "cti", "censys", "urlscan", "passive_dns", "wayback",
                  "metagoofil", "intelx", "fofa", "zoomeye", "typosquat", "favicon", "abuse_ch",
                  "dns_auth", "screenshot", "cert_pivot", "bugbounty", "certspotter",
+                 "tranco", "security_txt", "opengraph",
                  "takeover", "secrets_scan", "risk", "favicon_cluster"],
     "url":      ["web", "domain", "cti", "urlscan", "crawler", "favicon", "abuse_ch", "screenshot"],
     "ip":       ["ip", "cti", "censys", "intelx", "internetdb", "fofa", "zoomeye", "port_probe", "abuse_ch"],

@@ -7,5 +7,6 @@ from . import (  # noqa: F401
     screenshot, gravatar, dns_auth, cert_pivot, email_permute,
     bugbounty, mitre, emailrep, webhook, shodan_dns, honeypot,
     takeover, secrets_scan, risk, certspotter, favicon_cluster,
+    tranco, security_txt, opengraph,
 )
 from . import plugins  # noqa: F401 — late-binding plugin discovery
