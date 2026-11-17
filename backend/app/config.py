@@ -44,6 +44,8 @@ class Settings(BaseSettings):
     OPENCTI_TOKEN: str = ""
     EMAILREP_API_KEY: str = ""
     WEBHOOK_URL: str = ""
+    ELASTICSEARCH_URL: str = ""
+    ELASTICSEARCH_API_KEY: str = ""
 
     HTTP_TIMEOUT_SECONDS: int = 20
     MAX_CONCURRENT_COLLECTORS: int = 8

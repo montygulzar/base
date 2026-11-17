@@ -9,9 +9,19 @@ router = APIRouter()
 
 
 @router.get("/{inv_id}")
-async def graph(inv_id: str, _: object = Depends(current_user), db: AsyncSession = Depends(get_session)):
-    ents = (await db.execute(select(Entity).where(Entity.investigation_id == inv_id))).scalars().all()
-    rels = (await db.execute(select(Relationship).where(Relationship.investigation_id == inv_id))).scalars().all()
+async def graph(inv_id: str, min_confidence: float = 0.0, type: str | None = None,
+                _: object = Depends(current_user), db: AsyncSession = Depends(get_session)):
+    q_e = select(Entity).where(Entity.investigation_id == inv_id,
+                               Entity.confidence >= min_confidence)
+    if type:
+        q_e = q_e.where(Entity.type == type)
+    ents = (await db.execute(q_e)).scalars().all()
+    rels = (await db.execute(
+        select(Relationship).where(Relationship.investigation_id == inv_id,
+                                   Relationship.confidence >= min_confidence)
+    )).scalars().all()
+    keep_ids = {e.id for e in ents}
+    rels = [r for r in rels if r.src_id in keep_ids and r.dst_id in keep_ids]
     return {
         "nodes": [
             {"id": e.id, "type": e.type, "value": e.value,
