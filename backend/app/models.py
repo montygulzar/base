@@ -28,6 +28,7 @@ class Investigation(Base):
     owner_id: Mapped[str] = mapped_column(String, ForeignKey("users.id"))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    tags: Mapped[dict] = mapped_column(JSON, default=dict)
     subjects: Mapped[list["Subject"]] = relationship(back_populates="investigation", cascade="all, delete-orphan")
     jobs: Mapped[list["Job"]] = relationship(back_populates="investigation", cascade="all, delete-orphan")
     entities: Mapped[list["Entity"]] = relationship(back_populates="investigation", cascade="all, delete-orphan")
