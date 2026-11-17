@@ -38,6 +38,7 @@ export default function Investigation({ params }: { params: { id: string } }) {
           <a className="btn" href={`${API_URL}/api/reports/${id}.csv`} target="_blank">csv</a>
           <a className="btn" href={`${API_URL}/api/reports/${id}.json`} target="_blank">json</a>
           <a className="btn" href={`${API_URL}/api/misp/${id}.misp.json`} target="_blank">misp</a>
+          <a className="btn" href={`${API_URL}/api/stix/${id}.stix.json`} target="_blank">stix</a>
         </div>
       </div>
 

@@ -30,6 +30,14 @@ class Settings(BaseSettings):
     HIBP_API_KEY: str = ""
     OTX_API_KEY: str = ""
     OPENCORPORATES_API_KEY: str = ""
+    INTELX_API_KEY: str = ""
+    TINEYE_API_USER: str = ""
+    TINEYE_API_KEY: str = ""
+    BING_VISUAL_API_KEY: str = ""
+    FOFA_API_EMAIL: str = ""
+    FOFA_API_KEY: str = ""
+    ZOOMEYE_API_KEY: str = ""
+    COMPANIESHOUSE_API_KEY: str = ""
 
     HTTP_TIMEOUT_SECONDS: int = 20
     MAX_CONCURRENT_COLLECTORS: int = 8

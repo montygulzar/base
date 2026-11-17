@@ -4,7 +4,7 @@ from pathlib import Path
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from ..auth import current_user
+from ..auth import current_user, require_role
 from ..db import get_session
 from ..config import get_settings
 from ..models import User, Investigation, Subject, Job, Finding, AuditLog
@@ -16,7 +16,8 @@ router = APIRouter()
 
 
 @router.post("", response_model=InvestigationOut)
-async def create(data: InvestigationCreate, u: User = Depends(current_user), db: AsyncSession = Depends(get_session)):
+async def create(data: InvestigationCreate, u: User = Depends(require_role("admin", "analyst")),
+                 db: AsyncSession = Depends(get_session)):
     inv = Investigation(name=data.name, description=data.description, owner_id=u.id)
     db.add(inv); await db.flush()
     for s in data.subjects:
@@ -40,7 +41,7 @@ async def get_one(inv_id: str, _: User = Depends(current_user), db: AsyncSession
 
 
 @router.delete("/{inv_id}")
-async def delete(inv_id: str, u: User = Depends(current_user), db: AsyncSession = Depends(get_session)):
+async def delete(inv_id: str, u: User = Depends(require_role("admin")), db: AsyncSession = Depends(get_session)):
     inv = await db.get(Investigation, inv_id)
     if not inv: raise HTTPException(404, "not found")
     await db.delete(inv)
@@ -50,7 +51,8 @@ async def delete(inv_id: str, u: User = Depends(current_user), db: AsyncSession 
 
 
 @router.post("/{inv_id}/subjects", response_model=SubjectOut)
-async def add_subject(inv_id: str, data: SubjectIn, u: User = Depends(current_user), db: AsyncSession = Depends(get_session)):
+async def add_subject(inv_id: str, data: SubjectIn, u: User = Depends(require_role("admin", "analyst")),
+                      db: AsyncSession = Depends(get_session)):
     inv = await db.get(Investigation, inv_id)
     if not inv: raise HTTPException(404, "not found")
     s = Subject(investigation_id=inv_id, type=data.type, value=data.value, note=data.note)
@@ -66,7 +68,7 @@ async def list_subjects(inv_id: str, _: User = Depends(current_user), db: AsyncS
 
 @router.post("/{inv_id}/upload")
 async def upload(inv_id: str, kind: str = Form(...), file: UploadFile = File(...),
-                 u: User = Depends(current_user), db: AsyncSession = Depends(get_session)):
+                 u: User = Depends(require_role("admin", "analyst")), db: AsyncSession = Depends(get_session)):
     """Uploads are stored under UPLOAD_DIR/<inv_id>/ and added as a subject
     of type media|document pointing to the local absolute path."""
     s = get_settings()
@@ -91,7 +93,7 @@ async def upload(inv_id: str, kind: str = Form(...), file: UploadFile = File(...
 
 @router.post("/{inv_id}/run")
 async def run(inv_id: str, req: RunRequest,
-              u: User = Depends(current_user), db: AsyncSession = Depends(get_session)):
+              u: User = Depends(require_role("admin", "analyst")), db: AsyncSession = Depends(get_session)):
     inv = await db.get(Investigation, inv_id)
     if not inv: raise HTTPException(404, "not found")
     db.add(AuditLog(user_id=u.id, action="investigation.run", target=inv_id,

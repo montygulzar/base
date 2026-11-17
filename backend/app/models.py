@@ -120,3 +120,17 @@ class IntegrationStatus(Base):
     last_ok_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     last_error: Mapped[str] = mapped_column(Text, default="")
     rate_limit_remaining: Mapped[int | None] = mapped_column(Integer, nullable=True)
+
+
+class Schedule(Base):
+    """Recurring investigation runs. Interval-based (seconds). Runs on the
+    worker tick — see app/worker.py cron_tick."""
+    __tablename__ = "schedules"
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    investigation_id: Mapped[str] = mapped_column(String, ForeignKey("investigations.id", ondelete="CASCADE"))
+    interval_seconds: Mapped[int] = mapped_column(Integer, default=86400)
+    modules: Mapped[dict] = mapped_column(JSON, default=dict)
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+    last_run_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    next_run_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

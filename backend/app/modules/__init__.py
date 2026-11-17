@@ -1,2 +1,6 @@
 from .base import Module, Finding, Entity, Relationship, REGISTRY
-from . import domain, ip, email, username, company, media, documents, cti, web, censys, urlscan  # noqa: F401
+from . import (  # noqa: F401
+    domain, ip, email, username, company, media, documents, cti, web,
+    censys, urlscan, passive_dns, wayback, crawler, metagoofil,
+    intelx, reverse_image,
+)

@@ -19,13 +19,13 @@ log = logging.getLogger("orchestrator")
 
 # default module selection per subject type
 PLAN: dict[str, list[str]] = {
-    "domain":   ["domain", "web", "cti", "censys", "urlscan"],
-    "url":      ["web", "domain", "cti", "urlscan"],
-    "ip":       ["ip", "cti", "censys"],
-    "email":    ["email"],
-    "username": ["username"],
+    "domain":   ["domain", "web", "cti", "censys", "urlscan", "passive_dns", "wayback", "metagoofil", "intelx"],
+    "url":      ["web", "domain", "cti", "urlscan", "crawler"],
+    "ip":       ["ip", "cti", "censys", "intelx"],
+    "email":    ["email", "intelx"],
+    "username": ["username", "intelx"],
     "company":  ["company"],
-    "media":    ["media"],
+    "media":    ["media", "reverse_image"],
     "document": ["documents", "cti"],
 }
 

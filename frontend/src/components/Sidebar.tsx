@@ -7,7 +7,9 @@ const items = [
   { href: "/",              label: "dashboard" },
   { href: "/investigations",label: "investigations" },
   { href: "/integrations",  label: "sources" },
+  { href: "/schedules",     label: "schedules" },
   { href: "/reports",       label: "reports" },
+  { href: "/audit",         label: "audit" },
 ];
 
 export default function Sidebar() {
