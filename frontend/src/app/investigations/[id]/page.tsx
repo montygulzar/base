@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { api, fetcher, API_URL, getToken } from "@/lib/api";
 import Graph from "@/components/Graph";
 import EntityChart from "@/components/EntityChart";
+import ScreenshotGallery from "@/components/ScreenshotGallery";
 import Link from "next/link";
 
 type Job = { id: string; module: string; status: string; error: string; result: any };
@@ -73,6 +74,9 @@ export default function Investigation({ params }: { params: { id: string } }) {
             </div>
           </div>
           <EntityChart invId={id} />
+          <div className="col-span-2">
+            <ScreenshotGallery invId={id} />
+          </div>
         </div>
       )}
 

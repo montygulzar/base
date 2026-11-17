@@ -8,8 +8,8 @@ Emits an `honeypot_signal` finding per matching IP.
 from __future__ import annotations
 from sqlalchemy import select
 from ..db import SessionLocal
-from ..models import Finding, Entity
-from .base import Module, Finding as F, CollectionResult, RunContext, register
+from ..models import Finding
+from .base import Module, Finding as F, Entity, CollectionResult, RunContext, register
 
 
 async def run(subject: str, ctx: RunContext) -> CollectionResult:
@@ -50,9 +50,7 @@ async def run(subject: str, ctx: RunContext) -> CollectionResult:
                            "signals": per_ip}, 0.85 if per_ip else 0.3))
     for ip, sigs in per_ip.items():
         if ip and ip != "unknown":
-            out.entities.append(
-                __import__("app.modules.base", fromlist=["Entity"]).Entity(
-                    "ip", ip, {"honeypot_signals": sigs}, 0.8))
+            out.entities.append(Entity("ip", ip, {"honeypot_signals": sigs}, 0.8))
     return out
 
 
