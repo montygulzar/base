@@ -122,6 +122,28 @@ class IntegrationStatus(Base):
     rate_limit_remaining: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
 
+class EntityNote(Base):
+    """Free-form analyst tags / notes on a graph entity."""
+    __tablename__ = "entity_notes"
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    entity_id: Mapped[str] = mapped_column(String, ForeignKey("entities.id", ondelete="CASCADE"))
+    user_id: Mapped[str | None] = mapped_column(String, nullable=True)
+    tags: Mapped[dict] = mapped_column(JSON, default=dict)
+    note: Mapped[str] = mapped_column(Text, default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class InvestigationTemplate(Base):
+    """Named preset: 'domain workup', 'phishing triage', ..."""
+    __tablename__ = "inv_templates"
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    name: Mapped[str] = mapped_column(String, unique=True)
+    description: Mapped[str] = mapped_column(Text, default="")
+    subject_types: Mapped[dict] = mapped_column(JSON, default=dict)
+    modules: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
 class Schedule(Base):
     """Recurring investigation runs. Interval-based (seconds). Runs on the
     worker tick — see app/worker.py cron_tick."""
