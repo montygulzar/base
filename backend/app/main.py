@@ -40,11 +40,12 @@ app.include_router(stix.router, prefix="/api/stix", tags=["stix"])
 app.include_router(schedules.router, prefix="/api/schedules", tags=["schedules"])
 app.include_router(audit.router, prefix="/api/audit", tags=["audit"])
 app.include_router(api_health.router, prefix="/api/sources", tags=["sources"])
-from .api import exports as api_exports, users as api_users, ingest as api_ingest, compare as api_compare
+from .api import exports as api_exports, users as api_users, ingest as api_ingest, compare as api_compare, search as api_search
 app.include_router(api_exports.router, prefix="/api/exports", tags=["exports"])
 app.include_router(api_users.router, prefix="/api/users", tags=["users"])
 app.include_router(api_ingest.router, prefix="/api/ingest", tags=["ingest"])
 app.include_router(api_compare.router, prefix="/api/compare", tags=["compare"])
+app.include_router(api_search.router, prefix="/api/search", tags=["search"])
 
 
 @app.get("/api/health")

@@ -17,6 +17,13 @@ export default function Investigation({ params }: { params: { id: string } }) {
   const finds = useSWR<Finding[]>(`/api/investigations/${id}/findings`, fetcher, { refreshInterval: 3000 });
 
   const [tab, setTab] = useState<"overview"|"findings"|"graph"|"jobs">("overview");
+  const [search, setSearch] = useState("");
+  const [searchResults, setSearchResults] = useState<Finding[] | null>(null);
+  async function doSearch() {
+    if (!search) { setSearchResults(null); return; }
+    const r = await api<{ hits: Finding[] }>(`/api/search/${id}?q=${encodeURIComponent(search)}`);
+    setSearchResults(r.hits);
+  }
 
   async function run() {
     await api(`/api/investigations/${id}/run`, { method: "POST", body: JSON.stringify({}) });
@@ -71,13 +78,21 @@ export default function Investigation({ params }: { params: { id: string } }) {
       )}
 
       {tab === "findings" && (
+        <div className="space-y-2">
+          <div className="flex gap-2">
+            <input className="input flex-1" placeholder="search findings…" value={search}
+                   onChange={e => setSearch(e.target.value)}
+                   onKeyDown={e => e.key === "Enter" && doSearch()} />
+            <button className="btn-primary" onClick={doSearch}>search</button>
+            {searchResults && <button className="btn" onClick={() => { setSearchResults(null); setSearch(""); }}>clear</button>}
+          </div>
         <div className="card">
           <table className="w-full text-xs font-mono">
             <thead className="text-mute text-left">
               <tr><th className="p-2">module</th><th>source</th><th>kind</th><th>conf</th><th>data</th><th>time</th></tr>
             </thead>
             <tbody>
-              {(finds.data ?? []).map(f => (
+              {(searchResults ?? finds.data ?? []).map(f => (
                 <tr key={f.id} className="border-t border-line align-top">
                   <td className="p-2">{f.module}</td>
                   <td>{f.source}</td>
@@ -87,9 +102,10 @@ export default function Investigation({ params }: { params: { id: string } }) {
                   <td className="text-mute">{new Date(f.collected_at).toLocaleTimeString()}</td>
                 </tr>
               ))}
-              {(finds.data ?? []).length === 0 && <tr><td colSpan={6} className="text-mute p-4">no findings yet. click run collection.</td></tr>}
+              {((searchResults ?? finds.data) ?? []).length === 0 && <tr><td colSpan={6} className="text-mute p-4">{searchResults ? "no matches." : "no findings yet. click run collection."}</td></tr>}
             </tbody>
           </table>
+        </div>
         </div>
       )}
 
