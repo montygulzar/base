@@ -8,6 +8,7 @@ const items = [
   { href: "/investigations",label: "investigations" },
   { href: "/integrations",  label: "sources" },
   { href: "/modules",       label: "modules" },
+  { href: "/scratchpad",    label: "scratchpad" },
   { href: "/schedules",     label: "schedules" },
   { href: "/templates",     label: "templates" },
   { href: "/reports",       label: "reports" },
