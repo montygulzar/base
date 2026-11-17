@@ -110,6 +110,8 @@ app.include_router(api_degrees.router, prefix="/api/degrees", tags=["degrees"])
 app.include_router(api_backup.router, prefix="/api/backup", tags=["backup"])
 app.include_router(api_mermaid.router, prefix="/api/mermaid", tags=["mermaid"])
 app.include_router(api_seal.router, prefix="/api/seal", tags=["seal"])
+from .api import global_search as api_global_search
+app.include_router(api_global_search.router, prefix="/api/global_search", tags=["global-search"])
 
 
 @app.get("/api/health")
