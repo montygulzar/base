@@ -15,6 +15,7 @@ const items = [
   { href: "/reports",       label: "reports" },
   { href: "/users",         label: "users" },
   { href: "/audit",         label: "audit" },
+  { href: "/settings",      label: "settings" },
 ];
 
 export default function Sidebar() {

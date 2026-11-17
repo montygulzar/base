@@ -119,8 +119,9 @@ app.include_router(api_csv.router, prefix="/api/csv_ingest", tags=["csv-ingest"]
 from .api import bulk_export as api_bulk_export, scratchpad as api_scratch
 app.include_router(api_bulk_export.router, prefix="/api/bulk_export", tags=["bulk-export"])
 app.include_router(api_scratch.router, prefix="/api/scratchpad", tags=["scratchpad"])
-from .api import analytics as api_analytics
+from .api import analytics as api_analytics, config as api_config
 app.include_router(api_analytics.router, prefix="/api/analytics", tags=["analytics"])
+app.include_router(api_config.router, prefix="/api/config", tags=["config"])
 
 
 @app.get("/api/health")
