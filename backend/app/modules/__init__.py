@@ -17,6 +17,6 @@ from . import (  # noqa: F401
     github_dorks, archive_whois, asn_prefixes, spamhaus_dbl,
     pulsedive, ip_api_com, reverse_ns,
     tld_twist, exploitdb, hackernews,
-    btc_addr, eth_addr, nvd_cpe,
+    btc_addr, eth_addr, nvd_cpe, idn_homograph,
 )
 from . import plugins  # noqa: F401 — late-binding plugin discovery

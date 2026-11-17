@@ -24,7 +24,7 @@ PLAN: dict[str, list[str]] = {
                  "dns_auth", "screenshot", "cert_pivot", "bugbounty", "certspotter",
                  "tranco", "security_txt", "opengraph", "phishing_feeds", "dnssec_axfr", "csp",
                  "robtex", "caa", "github_dorks", "archive_whois", "spamhaus_dbl",
-                 "pulsedive", "reverse_ns", "tld_twist", "hackernews",
+                 "pulsedive", "reverse_ns", "tld_twist", "hackernews", "idn_homograph",
                  "takeover", "secrets_scan", "risk", "favicon_cluster"],
     "url":      ["web", "domain", "cti", "urlscan", "crawler", "favicon", "abuse_ch",
                  "screenshot", "url_unshorten", "url_liveness"],

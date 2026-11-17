@@ -57,9 +57,11 @@ app.include_router(api_metrics.router, tags=["metrics"])
 app.include_router(api_share.router, prefix="/api/share", tags=["share"])
 app.include_router(api_progress.router, prefix="/api/progress", tags=["progress"])
 app.include_router(api_screenshots.router, prefix="/api/screenshots", tags=["screenshots"])
-from .api import fork as api_fork, jwt_tool as api_jwt_tool
+from .api import fork as api_fork, jwt_tool as api_jwt_tool, detect as api_detect, recent as api_recent
 app.include_router(api_fork.router, prefix="/api/fork", tags=["fork"])
 app.include_router(api_jwt_tool.router, prefix="/api/jwt", tags=["jwt"])
+app.include_router(api_detect.router, prefix="/api/detect", tags=["detect"])
+app.include_router(api_recent.router, prefix="/api/recent", tags=["recent"])
 
 
 @app.get("/api/health")
