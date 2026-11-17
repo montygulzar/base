@@ -28,7 +28,7 @@ PLAN: dict[str, list[str]] = {
                  "takeover", "secrets_scan", "risk", "favicon_cluster"],
     "url":      ["web", "domain", "cti", "urlscan", "crawler", "favicon", "abuse_ch",
                  "screenshot", "url_unshorten", "url_liveness", "nuclei_lite", "cors",
-                 "phishing_lexicon"],
+                 "phishing_lexicon", "graphql_check", "sitemap"],
     "ip":       ["ip", "cti", "censys", "intelx", "internetdb", "fofa", "zoomeye", "port_probe",
                  "abuse_ch", "crowdsec", "blocklists", "robtex", "dnsbl", "ipapi",
                  "cloud_provider", "asn_prefixes", "pulsedive", "ip_api_com"],
