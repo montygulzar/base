@@ -3,6 +3,7 @@ import useSWR from "swr";
 import { useEffect, useState } from "react";
 import { api, fetcher, API_URL, getToken } from "@/lib/api";
 import Graph from "@/components/Graph";
+import EntityChart from "@/components/EntityChart";
 import Link from "next/link";
 
 type Job = { id: string; module: string; status: string; error: string; result: any };
@@ -67,13 +68,11 @@ export default function Investigation({ params }: { params: { id: string } }) {
                 <li key={s.id}><span className="badge mr-2">{s.type}</span>{s.value} <span className="text-mute">{s.note}</span></li>
               ))}
             </ul>
-          </div>
-          <div className="card p-4">
-            <div className="font-mono text-mute text-xs uppercase mb-2">collection stats</div>
-            <div className="text-sm font-mono">
+            <div className="text-mute text-xs mt-3">
               jobs: {jobs.data?.length ?? 0} • findings: {finds.data?.length ?? 0}
             </div>
           </div>
+          <EntityChart invId={id} />
         </div>
       )}
 
