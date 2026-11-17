@@ -28,9 +28,21 @@ export default function Investigation({ params }: { params: { id: string } }) {
     setSearchResults(r.hits);
   }
 
-  async function run() {
-    await api(`/api/investigations/${id}/run`, { method: "POST", body: JSON.stringify({}) });
-    jobs.mutate();
+  const [runOpen, setRunOpen] = useState(false);
+  const [moduleList, setModuleList] = useState<any[]>([]);
+  const [chosen, setChosen] = useState<Set<string>>(new Set());
+  async function openRunPicker() {
+    if (!moduleList.length) {
+      try { setModuleList(await api<any[]>("/api/modules")); } catch {}
+    }
+    setRunOpen(true);
+  }
+  async function run(modules: string[] | null) {
+    await api(`/api/investigations/${id}/run`, {
+      method: "POST",
+      body: JSON.stringify(modules ? { modules } : {}),
+    });
+    setRunOpen(false); setChosen(new Set()); jobs.mutate();
   }
   const token = getToken();
   return (
@@ -41,7 +53,8 @@ export default function Investigation({ params }: { params: { id: string } }) {
           <div className="text-mute text-xs font-mono">{inv.data?.status}</div>
         </div>
         <div className="flex gap-2">
-          <button className="btn-primary" onClick={run}>run collection</button>
+          <button className="btn-primary" onClick={() => run(null)}>run default plan</button>
+          <button className="btn" onClick={openRunPicker}>pick modules…</button>
           <a className="btn" href={`${API_URL}/api/reports/${id}.md`} target="_blank">md</a>
           <a className="btn" href={`${API_URL}/api/reports/${id}.html`} target="_blank">html</a>
           <a className="btn" href={`${API_URL}/api/reports/${id}.pdf`} target="_blank">pdf</a>
@@ -63,6 +76,35 @@ export default function Investigation({ params }: { params: { id: string } }) {
         ))}
       </div>
 
+      {runOpen && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="card w-[720px] max-h-[80vh] p-5 overflow-auto scroll-thin space-y-3">
+            <div className="flex justify-between items-center">
+              <div className="font-mono text-mute uppercase text-xs">pick modules ({chosen.size} selected)</div>
+              <button className="btn" onClick={() => setRunOpen(false)}>cancel</button>
+            </div>
+            <div className="grid grid-cols-2 gap-1 text-xs font-mono">
+              {moduleList.sort((a, b) => a.key.localeCompare(b.key)).map(m => (
+                <label key={m.key} className="flex items-start gap-2 hover:bg-soft px-1 cursor-pointer">
+                  <input type="checkbox" checked={chosen.has(m.key)}
+                         onChange={e => {
+                           const s = new Set(chosen);
+                           if (e.target.checked) s.add(m.key); else s.delete(m.key);
+                           setChosen(s);
+                         }} />
+                  <span className="text-acc">{m.key}</span>
+                  <span className="text-mute truncate">— {m.description}</span>
+                </label>
+              ))}
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <button className="btn" onClick={() => setChosen(new Set(moduleList.map(m => m.key)))}>all</button>
+              <button className="btn" onClick={() => setChosen(new Set())}>none</button>
+              <button className="btn-primary" onClick={() => run(Array.from(chosen))} disabled={!chosen.size}>run</button>
+            </div>
+          </div>
+        </div>
+      )}
       {tab === "overview" && (
         <div className="grid grid-cols-2 gap-4">
           <div className="card p-4">
