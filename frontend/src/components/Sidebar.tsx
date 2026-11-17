@@ -7,6 +7,7 @@ const items = [
   { href: "/",              label: "dashboard" },
   { href: "/investigations",label: "investigations" },
   { href: "/integrations",  label: "sources" },
+  { href: "/modules",       label: "modules" },
   { href: "/schedules",     label: "schedules" },
   { href: "/templates",     label: "templates" },
   { href: "/reports",       label: "reports" },
