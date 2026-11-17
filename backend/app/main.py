@@ -105,6 +105,9 @@ from .api import zip_export as api_zip, fuzzy as api_fuzzy, apikeys as api_apike
 app.include_router(api_zip.router, prefix="/api/zip", tags=["zip"])
 app.include_router(api_fuzzy.router, prefix="/api/fuzzy", tags=["fuzzy"])
 app.include_router(api_apikeys.router, prefix="/api/apikeys", tags=["apikeys"])
+from .api import degrees as api_degrees, backup as api_backup
+app.include_router(api_degrees.router, prefix="/api/degrees", tags=["degrees"])
+app.include_router(api_backup.router, prefix="/api/backup", tags=["backup"])
 
 
 @app.get("/api/health")
