@@ -1,7 +1,8 @@
 "use client";
 import useSWR from "swr";
-import { fetcher } from "@/lib/api";
+import { api, fetcher } from "@/lib/api";
 import Link from "next/link";
+import { useState } from "react";
 
 type Inv = { id: string; name: string; status: string; updated_at: string };
 type Integ = { name: string; configured: boolean; last_error: string };
@@ -9,6 +10,13 @@ type Integ = { name: string; configured: boolean; last_error: string };
 export default function Dashboard() {
   const inv = useSWR<Inv[]>("/api/investigations", fetcher);
   const integ = useSWR<Integ[]>("/api/integrations", fetcher);
+  const [checking, setChecking] = useState(false);
+  const [checkResult, setCheckResult] = useState<any | null>(null);
+  async function runHealthCheck() {
+    setChecking(true);
+    try { setCheckResult(await api("/api/sources/check", { method: "POST" })); }
+    finally { setChecking(false); integ.mutate(); }
+  }
   const invs = inv.data ?? [];
   const integs = integ.data ?? [];
   const configured = integs.filter(i => i.configured).length;
@@ -53,8 +61,19 @@ export default function Dashboard() {
           </table>
         </div>
         <div className="card p-4">
-          <div className="font-mono text-sm text-mute uppercase mb-3">source health</div>
-          <ul className="space-y-1 text-sm font-mono">
+          <div className="flex justify-between items-center mb-3">
+            <div className="font-mono text-sm text-mute uppercase">source health</div>
+            <button className="btn" onClick={runHealthCheck} disabled={checking}>
+              {checking ? "checking…" : "ping sources"}
+            </button>
+          </div>
+          {checkResult && (
+            <div className="text-xs font-mono text-mute mb-2">
+              last run {new Date(checkResult.at).toLocaleTimeString()} —{" "}
+              {checkResult.results.filter((r: any) => r.ok).length}/{checkResult.checked} ok
+            </div>
+          )}
+          <ul className="space-y-1 text-sm font-mono max-h-96 overflow-auto scroll-thin">
             {integs.map(i => (
               <li key={i.name} className="flex justify-between">
                 <span>{i.name}</span>
