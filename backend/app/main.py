@@ -40,6 +40,8 @@ app.include_router(stix.router, prefix="/api/stix", tags=["stix"])
 app.include_router(schedules.router, prefix="/api/schedules", tags=["schedules"])
 app.include_router(audit.router, prefix="/api/audit", tags=["audit"])
 app.include_router(api_health.router, prefix="/api/sources", tags=["sources"])
+from .api import exports as api_exports
+app.include_router(api_exports.router, prefix="/api/exports", tags=["exports"])
 
 
 @app.get("/api/health")
