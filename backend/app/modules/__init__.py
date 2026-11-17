@@ -10,5 +10,6 @@ from . import (  # noqa: F401
     tranco, security_txt, opengraph,
     phishing_feeds, crowdsec, dnssec_axfr, csp,
     bluesky, mastodon, reddit_user, osv, package_typosquat,
+    blocklists, robtex,
 )
 from . import plugins  # noqa: F401 — late-binding plugin discovery
