@@ -1,7 +1,9 @@
 import logging
+import time
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from .config import get_settings
 from .api import auth as api_auth, investigations, modules as api_modules, integrations as api_integrations, graph, reports, ws, transforms, timeline, misp, stix, schedules, audit, health as api_health
 
@@ -25,6 +27,30 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# Simple in-process token-bucket per IP; honest-effort, not DDoS-grade.
+_BUCKETS: dict[str, tuple[int, float]] = {}
+_RATE_LIMIT = get_settings().RATE_LIMIT_PER_MINUTE
+
+
+@app.middleware("http")
+async def rate_limit(request: Request, call_next):
+    client = (request.client.host if request.client else "?") + ":" + (request.headers.get("authorization", "")[:16] or "anon")
+    now = time.monotonic()
+    tokens, last = _BUCKETS.get(client, (_RATE_LIMIT, now))
+    # refill
+    refill = (now - last) * (_RATE_LIMIT / 60.0)
+    tokens = min(_RATE_LIMIT, tokens + refill)
+    if tokens < 1:
+        return JSONResponse({"detail": "rate limit"}, status_code=429,
+                            headers={"retry-after": "5"})
+    tokens -= 1
+    _BUCKETS[client] = (tokens, now)
+    start = time.monotonic()
+    resp = await call_next(request)
+    resp.headers["x-base-duration-ms"] = str(round((time.monotonic() - start) * 1000, 2))
+    return resp
 
 app.include_router(api_auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(investigations.router, prefix="/api/investigations", tags=["investigations"])
