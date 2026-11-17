@@ -15,9 +15,29 @@ const COLORS: Record<string, string> = {
 };
 
 export default function GraphView({ investigationId }: { investigationId: string }) {
-  const { data, mutate } = useSWR<Graph>(`/api/graph/${investigationId}`, fetcher, { refreshInterval: 4000 });
   const [filter, setFilter] = useState<string>("");
+  const [minConf, setMinConf] = useState<number>(0);
+  const { data, mutate } = useSWR<Graph>(
+    `/api/graph/${investigationId}?min_confidence=${minConf}`,
+    fetcher, { refreshInterval: 4000 });
   const [sel, setSel] = useState<any | null>(null);
+  const [note, setNote] = useState("");
+  const [tags, setTags] = useState("");
+  const [notes, setNotes] = useState<any[]>([]);
+
+  async function loadNotes(id: string) {
+    try {
+      const r = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/notes/${id}`,
+        { headers: { Authorization: `Bearer ${localStorage.getItem("base_token")}` } });
+      setNotes(await r.json());
+    } catch { setNotes([]); }
+  }
+  async function addNote() {
+    if (!sel) return;
+    await api(`/api/notes/${sel.id}`, { method: "POST",
+      body: JSON.stringify({ tags: tags.split(",").map(s => s.trim()).filter(Boolean), note }) });
+    setNote(""); setTags(""); loadNotes(sel.id);
+  }
 
   async function expand(entityId: string, modules: string[] | null = null) {
     await api(`/api/transforms/${investigationId}/expand/${entityId}`, {
@@ -54,21 +74,30 @@ export default function GraphView({ investigationId }: { investigationId: string
     <div className="h-full w-full flex flex-col">
       <div className="p-2 border-b border-line flex gap-2 items-center">
         <input className="input" placeholder="filter by value or type" value={filter} onChange={e => setFilter(e.target.value)} />
+        <label className="text-mute text-xs font-mono flex items-center gap-1">
+          min conf
+          <input type="range" min="0" max="1" step="0.05" value={minConf}
+                 onChange={e => setMinConf(Number(e.target.value))} />
+          <span className="w-8">{minConf.toFixed(2)}</span>
+        </label>
         <div className="text-mute text-xs font-mono">
           {data?.nodes.length ?? 0} nodes • {data?.edges.length ?? 0} edges
         </div>
       </div>
       <div className="flex-1 relative">
         <ReactFlow nodes={nodes} edges={edges} fitView
-                   onNodeClick={(_, n) => setSel(data?.nodes.find(x => x.id === n.id) ?? null)}>
+                   onNodeClick={(_, n) => {
+                     const e = data?.nodes.find(x => x.id === n.id) ?? null;
+                     setSel(e); if (e) loadNotes(e.id);
+                   }}>
           <Background color="#1c212c" gap={16} />
           <Controls />
           <MiniMap nodeColor={() => "#242b38"} maskColor="rgba(11,13,18,.7)" />
         </ReactFlow>
         {sel && (
-          <div className="absolute top-2 right-2 card p-3 w-72 text-xs font-mono">
+          <div className="absolute top-2 right-2 card p-3 w-80 text-xs font-mono max-h-[70vh] overflow-auto scroll-thin">
             <div className="flex justify-between">
-              <div><span className="text-mute">{sel.type}</span> <span className="text-acc">{sel.value}</span></div>
+              <div><span className="text-mute">{sel.type}</span> <span className="text-acc break-all">{sel.value}</span></div>
               <button className="text-mute" onClick={() => setSel(null)}>×</button>
             </div>
             <div className="text-mute mt-1">confidence {sel.confidence.toFixed(2)}</div>
@@ -76,6 +105,19 @@ export default function GraphView({ investigationId }: { investigationId: string
             {["domain","ip","url","email","username"].includes(sel.type) && (
               <button className="btn-primary w-full mt-2" onClick={() => expand(sel.id)}>expand (run modules)</button>
             )}
+            <div className="mt-3 text-mute uppercase">notes</div>
+            {notes.map(n => (
+              <div key={n.id} className="border border-line rounded p-1 mt-1">
+                <div className="flex gap-1 flex-wrap">
+                  {(n.tags || []).map((t: string) => <span key={t} className="badge">{t}</span>)}
+                </div>
+                <div className="text-ink/80">{n.note}</div>
+                <div className="text-mute text-[10px]">{new Date(n.created_at).toLocaleString()}</div>
+              </div>
+            ))}
+            <input className="input w-full mt-2" placeholder="tag1, tag2" value={tags} onChange={e => setTags(e.target.value)} />
+            <textarea className="input w-full h-12 mt-1" placeholder="note…" value={note} onChange={e => setNote(e.target.value)} />
+            <button className="btn w-full mt-1" onClick={addNote} disabled={!note && !tags}>save note</button>
           </div>
         )}
       </div>

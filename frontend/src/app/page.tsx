@@ -3,19 +3,35 @@ import useSWR from "swr";
 import { api, fetcher } from "@/lib/api";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Inv = { id: string; name: string; status: string; updated_at: string };
 type Integ = { name: string; configured: boolean; last_error: string };
+type Finding = { id: string; investigation_id: string; module: string; source: string;
+                 kind: string; confidence: number; collected_at: string };
 
 export default function Dashboard() {
   const inv = useSWR<Inv[]>("/api/investigations", fetcher);
   const integ = useSWR<Integ[]>("/api/integrations", fetcher);
+  const recent = useSWR<Finding[]>("/api/recent?limit=20", fetcher, { refreshInterval: 5000 });
+  const router = useRouter();
   const [checking, setChecking] = useState(false);
   const [checkResult, setCheckResult] = useState<any | null>(null);
+  const [triageVal, setTriageVal] = useState("");
+  const [triageBusy, setTriageBusy] = useState(false);
   async function runHealthCheck() {
     setChecking(true);
     try { setCheckResult(await api("/api/sources/check", { method: "POST" })); }
     finally { setChecking(false); integ.mutate(); }
+  }
+  async function doTriage() {
+    if (!triageVal.trim()) return;
+    setTriageBusy(true);
+    try {
+      const r = await api<{ investigation_id: string }>(
+        "/api/triage", { method: "POST", body: JSON.stringify({ value: triageVal.trim() }) });
+      router.push(`/investigations/${r.investigation_id}`);
+    } catch (e) { alert(String(e)); } finally { setTriageBusy(false); }
   }
   const invs = inv.data ?? [];
   const integs = integ.data ?? [];
@@ -28,6 +44,14 @@ export default function Dashboard() {
   ];
   return (
     <div className="space-y-6">
+      <div className="card p-3 flex gap-2 items-center">
+        <input className="input flex-1" placeholder="quick triage — paste any domain / ip / email / url / hash / cve / btc / eth / phone"
+               value={triageVal} onChange={e => setTriageVal(e.target.value)}
+               onKeyDown={e => e.key === "Enter" && doTriage()} />
+        <button className="btn-primary" onClick={doTriage} disabled={triageBusy || !triageVal.trim()}>
+          {triageBusy ? "running…" : "triage"}
+        </button>
+      </div>
       <div className="grid grid-cols-4 gap-4">
         {stats.map(s => (
           <div key={s.label} className="card p-4">
@@ -59,6 +83,21 @@ export default function Dashboard() {
               {invs.length === 0 && <tr><td colSpan={4} className="text-mute py-4">no investigations yet</td></tr>}
             </tbody>
           </table>
+        </div>
+        <div className="card p-4">
+          <div className="font-mono text-sm text-mute uppercase mb-3">recent findings</div>
+          <ul className="space-y-1 text-xs font-mono max-h-64 overflow-auto scroll-thin">
+            {(recent.data ?? []).map(f => (
+              <li key={f.id} className="flex gap-2 items-baseline">
+                <span className="text-mute w-16 shrink-0">{new Date(f.collected_at).toLocaleTimeString()}</span>
+                <span className="badge shrink-0">{f.source}</span>
+                <Link className="text-acc truncate" href={`/investigations/${f.investigation_id}`}>
+                  {f.kind}
+                </Link>
+              </li>
+            ))}
+            {!(recent.data ?? []).length && <li className="text-mute">no findings yet.</li>}
+          </ul>
         </div>
         <div className="card p-4">
           <div className="flex justify-between items-center mb-3">
