@@ -71,6 +71,8 @@ app.include_router(api_geojson.router, prefix="/api/geojson", tags=["geojson"])
 app.include_router(api_jobs.router, prefix="/api/jobs", tags=["jobs"])
 app.include_router(api_path.router, prefix="/api/path", tags=["path"])
 app.include_router(api_inv_tags.router, prefix="/api/inv_tags", tags=["inv-tags"])
+from .api import module_stats as api_module_stats
+app.include_router(api_module_stats.router, prefix="/api/module_stats", tags=["module-stats"])
 
 
 @app.get("/api/health")

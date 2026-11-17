@@ -19,5 +19,6 @@ from . import (  # noqa: F401
     tld_twist, exploitdb, hackernews,
     btc_addr, eth_addr, nvd_cpe, idn_homograph,
     elasticsearch_export, tls_scan, nuclei_lite, cors_check,
+    phishing_lexicon,
 )
 from . import plugins  # noqa: F401 — late-binding plugin discovery
