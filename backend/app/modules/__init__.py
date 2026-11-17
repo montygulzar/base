@@ -8,5 +8,6 @@ from . import (  # noqa: F401
     bugbounty, mitre, emailrep, webhook, shodan_dns, honeypot,
     takeover, secrets_scan, risk, certspotter, favicon_cluster,
     tranco, security_txt, opengraph,
+    phishing_feeds, crowdsec, dnssec_axfr, csp,
 )
 from . import plugins  # noqa: F401 — late-binding plugin discovery
