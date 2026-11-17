@@ -20,5 +20,6 @@ from . import (  # noqa: F401
     btc_addr, eth_addr, nvd_cpe, idn_homograph,
     elasticsearch_export, tls_scan, nuclei_lite, cors_check,
     phishing_lexicon, cve_search, epss, kev, btc_tx,
+    onion_validate, url_canon,
 )
 from . import plugins  # noqa: F401 — late-binding plugin discovery
