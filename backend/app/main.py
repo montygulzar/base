@@ -66,8 +66,9 @@ from .api import retention as api_retention, triage as api_triage, bulk as api_b
 app.include_router(api_retention.router, prefix="/api/retention", tags=["retention"])
 app.include_router(api_triage.router, prefix="/api/triage", tags=["triage"])
 app.include_router(api_bulk.router, prefix="/api/bulk", tags=["bulk"])
-from .api import geojson as api_geojson
+from .api import geojson as api_geojson, jobs as api_jobs
 app.include_router(api_geojson.router, prefix="/api/geojson", tags=["geojson"])
+app.include_router(api_jobs.router, prefix="/api/jobs", tags=["jobs"])
 
 
 @app.get("/api/health")
