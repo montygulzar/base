@@ -42,6 +42,8 @@ class Settings(BaseSettings):
     NUMVERIFY_API_KEY: str = ""
     OPENCTI_URL: str = ""
     OPENCTI_TOKEN: str = ""
+    EMAILREP_API_KEY: str = ""
+    WEBHOOK_URL: str = ""
 
     HTTP_TIMEOUT_SECONDS: int = 20
     MAX_CONCURRENT_COLLECTORS: int = 8
