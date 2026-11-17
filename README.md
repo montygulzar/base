@@ -1,11 +1,14 @@
 # base — OSINT investigation platform
 
 Unified, modular, extensible OSINT collection + correlation + reporting
-platform. **100 collection modules**, **~45 integration adapters**,
+platform. **105 collection modules**, **~45 integration adapters**,
 crypto subject-type extensions (BTC + ETH), one docker compose, a
-Next.js dashboard, a Python backend, STIX / MISP / GraphML / GEXF /
-GeoJSON / Mermaid / PDF / HTML / CSV / JSON / Markdown / ZIP exports,
-a TAXII 2.1 server, a Prometheus `/metrics` endpoint, and a headless CLI.
+Next.js dashboard with a module catalogue + ad-hoc scratchpad + global
+search, a Python backend with investigation sharing / forking / tagging /
+templates / schedules / audit / backup-restore, STIX / MISP / GraphML /
+GEXF / GeoJSON / Mermaid / PDF / HTML / CSV / JSON / Markdown / ZIP
+exports, a TAXII 2.1 server, a Prometheus `/metrics` endpoint, and a
+headless CLI.
 
 ## Quick start
 

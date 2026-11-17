@@ -22,6 +22,6 @@ from . import (  # noqa: F401
     phishing_lexicon, cve_search, epss, kev, btc_tx,
     onion_validate, url_canon, cert_expiry, homograph_gen, web_perf,
     smtp_banner, sitemap, graphql_check, ct_monitor, openapi_discover,
-    open_services,
+    open_services, smtp_starttls,
 )
 from . import plugins  # noqa: F401 — late-binding plugin discovery
