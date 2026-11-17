@@ -15,6 +15,20 @@ from ..queue import enqueue_run
 router = APIRouter()
 
 
+@router.post("/{job_id}/cancel")
+async def cancel(job_id: str, u=Depends(require_role("admin", "analyst")),
+                 db: AsyncSession = Depends(get_session)):
+    j = await db.get(Job, job_id)
+    if not j:
+        raise HTTPException(404, "job not found")
+    if j.status not in ("queued", "running"):
+        raise HTTPException(400, f"cannot cancel job in state '{j.status}'")
+    j.status = "cancelled"
+    j.finished_at = datetime.utcnow()
+    await db.commit()
+    return {"id": j.id, "status": "cancelled"}
+
+
 @router.post("/{job_id}/retry")
 async def retry(job_id: str, u=Depends(require_role("admin", "analyst")),
                 db: AsyncSession = Depends(get_session)):

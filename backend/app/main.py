@@ -113,6 +113,8 @@ app.include_router(api_seal.router, prefix="/api/seal", tags=["seal"])
 from .api import global_search as api_global_search, combined_graph as api_combined_graph
 app.include_router(api_global_search.router, prefix="/api/global_search", tags=["global-search"])
 app.include_router(api_combined_graph.router, prefix="/api/combined_graph", tags=["combined-graph"])
+from .api import plans as api_plans
+app.include_router(api_plans.router, prefix="/api/plans", tags=["plans"])
 
 
 @app.get("/api/health")
