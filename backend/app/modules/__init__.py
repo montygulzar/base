@@ -11,5 +11,6 @@ from . import (  # noqa: F401
     phishing_feeds, crowdsec, dnssec_axfr, csp,
     bluesky, mastodon, reddit_user, osv, package_typosquat,
     blocklists, robtex, dnsbl,
+    opensanctions, ahmia, hibp_pastes, url_liveness,
 )
 from . import plugins  # noqa: F401 — late-binding plugin discovery
