@@ -101,9 +101,10 @@ from .api import module_stats as api_module_stats, merge as api_merge, version a
 app.include_router(api_module_stats.router, prefix="/api/module_stats", tags=["module-stats"])
 app.include_router(api_merge.router, prefix="/api/merge", tags=["merge"])
 app.include_router(api_version.router, prefix="/api/version", tags=["version"])
-from .api import zip_export as api_zip, fuzzy as api_fuzzy
+from .api import zip_export as api_zip, fuzzy as api_fuzzy, apikeys as api_apikeys
 app.include_router(api_zip.router, prefix="/api/zip", tags=["zip"])
 app.include_router(api_fuzzy.router, prefix="/api/fuzzy", tags=["fuzzy"])
+app.include_router(api_apikeys.router, prefix="/api/apikeys", tags=["apikeys"])
 
 
 @app.get("/api/health")

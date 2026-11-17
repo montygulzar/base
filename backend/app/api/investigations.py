@@ -110,9 +110,10 @@ async def jobs(inv_id: str, _: User = Depends(current_user), db: AsyncSession = 
 
 @router.get("/{inv_id}/findings", response_model=list[FindingOut])
 async def findings(inv_id: str, module: str | None = None, source: str | None = None,
+                   limit: int = 500, offset: int = 0,
                    _: User = Depends(current_user), db: AsyncSession = Depends(get_session)):
     q = select(Finding).where(Finding.investigation_id == inv_id)
     if module: q = q.where(Finding.module == module)
     if source: q = q.where(Finding.source == source)
-    q = q.order_by(Finding.collected_at.desc()).limit(2000)
+    q = q.order_by(Finding.collected_at.desc()).offset(max(0, offset)).limit(min(max(1, limit), 2000))
     return (await db.execute(q)).scalars().all()

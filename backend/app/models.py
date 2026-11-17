@@ -104,6 +104,17 @@ class Finding(Base):
     investigation: Mapped[Investigation] = relationship(back_populates="findings")
 
 
+class ApiKey(Base):
+    """Per-user API keys for CLI / automation. Stored hashed."""
+    __tablename__ = "api_keys"
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    user_id: Mapped[str] = mapped_column(String, ForeignKey("users.id", ondelete="CASCADE"))
+    label: Mapped[str] = mapped_column(String, default="")
+    hash: Mapped[str] = mapped_column(String)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    last_used_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
 class AuditLog(Base):
     __tablename__ = "audit_log"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
