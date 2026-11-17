@@ -116,6 +116,8 @@ app.include_router(api_combined_graph.router, prefix="/api/combined_graph", tags
 from .api import plans as api_plans, csv_ingest as api_csv
 app.include_router(api_plans.router, prefix="/api/plans", tags=["plans"])
 app.include_router(api_csv.router, prefix="/api/csv_ingest", tags=["csv-ingest"])
+from .api import bulk_export as api_bulk_export
+app.include_router(api_bulk_export.router, prefix="/api/bulk_export", tags=["bulk-export"])
 
 
 @app.get("/api/health")
