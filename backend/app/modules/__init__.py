@@ -18,6 +18,6 @@ from . import (  # noqa: F401
     pulsedive, ip_api_com, reverse_ns,
     tld_twist, exploitdb, hackernews,
     btc_addr, eth_addr, nvd_cpe, idn_homograph,
-    elasticsearch_export, tls_scan,
+    elasticsearch_export, tls_scan, nuclei_lite, cors_check,
 )
 from . import plugins  # noqa: F401 — late-binding plugin discovery
