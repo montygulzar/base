@@ -9,5 +9,6 @@ from . import (  # noqa: F401
     takeover, secrets_scan, risk, certspotter, favicon_cluster,
     tranco, security_txt, opengraph,
     phishing_feeds, crowdsec, dnssec_axfr, csp,
+    bluesky, mastodon, reddit_user, osv, package_typosquat,
 )
 from . import plugins  # noqa: F401 — late-binding plugin discovery

@@ -27,7 +27,7 @@ PLAN: dict[str, list[str]] = {
     "url":      ["web", "domain", "cti", "urlscan", "crawler", "favicon", "abuse_ch", "screenshot"],
     "ip":       ["ip", "cti", "censys", "intelx", "internetdb", "fofa", "zoomeye", "port_probe", "abuse_ch", "crowdsec"],
     "email":    ["email", "intelx", "dns_auth", "gravatar"],
-    "username": ["username", "intelx", "github_user"],
+    "username": ["username", "intelx", "github_user", "bluesky", "mastodon", "reddit_user"],
     "company":  ["company"],
     "media":    ["media", "reverse_image"],
     "document": ["documents", "cti", "abuse_ch"],
