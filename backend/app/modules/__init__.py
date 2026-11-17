@@ -13,5 +13,6 @@ from . import (  # noqa: F401
     blocklists, robtex, dnsbl,
     opensanctions, ahmia, hibp_pastes, url_liveness,
     caa, s3_enum, ipapi, cloud_bucket, pgp_keys,
+    cloud_provider, url_unshorten,
 )
 from . import plugins  # noqa: F401 — late-binding plugin discovery
