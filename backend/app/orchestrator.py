@@ -33,7 +33,7 @@ PLAN: dict[str, list[str]] = {
                  "abuse_ch", "crowdsec", "blocklists", "robtex", "dnsbl", "ipapi",
                  "cloud_provider", "asn_prefixes", "pulsedive", "ip_api_com"],
     "email":    ["email", "intelx", "dns_auth", "gravatar", "emailrep", "hibp_pastes", "pgp_keys"],
-    "username": ["username", "intelx", "github_user", "bluesky", "mastodon", "reddit_user"],
+    "username": ["username", "intelx", "github_user", "bluesky", "mastodon", "reddit_user", "telegram_channel"],
     "company":  ["company", "opensanctions", "ahmia", "s3_enum", "cloud_bucket",
                  "hackernews", "exploitdb"],
     "media":    ["media", "reverse_image"],
