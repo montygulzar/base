@@ -12,5 +12,6 @@ from . import (  # noqa: F401
     bluesky, mastodon, reddit_user, osv, package_typosquat,
     blocklists, robtex, dnsbl,
     opensanctions, ahmia, hibp_pastes, url_liveness,
+    caa, s3_enum, ipapi,
 )
 from . import plugins  # noqa: F401 — late-binding plugin discovery
