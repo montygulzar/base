@@ -6,6 +6,7 @@ import Graph from "@/components/Graph";
 import EntityChart from "@/components/EntityChart";
 import ScreenshotGallery from "@/components/ScreenshotGallery";
 import GeoMap from "@/components/GeoMap";
+import CascadeRanked from "@/components/CascadeRanked";
 import Link from "next/link";
 
 type Job = { id: string; module: string; status: string; error: string; result: any };
@@ -55,6 +56,16 @@ export default function Investigation({ params }: { params: { id: string } }) {
         <div className="flex gap-2">
           <button className="btn-primary" onClick={() => run(null)}>run default plan</button>
           <button className="btn" onClick={openRunPicker}>pick modules…</button>
+          <button className="btn" style={{background:"#f472b6", color:"#111"}}
+                  onClick={async () => {
+                    const hops = parseInt(prompt("Cascade depth (1–6):", "3") || "0");
+                    if (!hops) return;
+                    const prox = parseFloat(prompt("Min proximity to promote (0.05–0.5):", "0.15") || "0");
+                    if (!prox) return;
+                    await api(`/api/cascade/${id}`, { method: "POST",
+                      body: JSON.stringify({ max_hops: hops, min_proximity: prox }) });
+                    alert("Cascade started. Watch the findings/jobs tabs; viral expansion can take minutes.");
+                  }}>⚡ cascade (viral)</button>
           <a className="btn" href={`${API_URL}/api/reports/${id}.md`} target="_blank">md</a>
           <a className="btn" href={`${API_URL}/api/reports/${id}.html`} target="_blank">html</a>
           <a className="btn" href={`${API_URL}/api/reports/${id}.pdf`} target="_blank">pdf</a>
@@ -124,6 +135,9 @@ export default function Investigation({ params }: { params: { id: string } }) {
           </div>
           <div className="col-span-2">
             <GeoMap invId={id} />
+          </div>
+          <div className="col-span-2">
+            <CascadeRanked invId={id} />
           </div>
         </div>
       )}
