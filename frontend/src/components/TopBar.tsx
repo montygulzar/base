@@ -26,39 +26,49 @@ export default function TopBar() {
     setHits(r); setOpen(true);
   }
   return (
-    <header className="h-12 border-b border-line bg-panel px-6 flex items-center justify-between relative">
-      <div className="text-sm font-mono text-mute">intelligence platform</div>
-      <div className="relative">
-        <input className="input w-80" placeholder="global search (⏎)" value={q}
-               onChange={e => setQ(e.target.value)}
+    <header className="h-14 border-b border-line bg-bg px-6 flex items-center justify-between relative">
+      <div className="flex items-center gap-2 text-xs text-mute">
+        <span className="live-dot" />
+        <span>Connected</span>
+      </div>
+      <div className="relative w-[480px]">
+        <input className="input w-full pl-8" placeholder="Search everything — domains, IPs, handles, hashes…"
+               value={q} onChange={e => setQ(e.target.value)}
                onKeyDown={e => e.key === "Enter" && run()}
                onBlur={() => setTimeout(() => setOpen(false), 200)} />
+        <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-dim text-sm">⌕</span>
         {open && hits && (
-          <div className="absolute right-0 top-10 w-96 card max-h-96 overflow-auto scroll-thin text-xs font-mono z-50">
-            {hits.investigations.length > 0 && <div className="p-2 text-mute uppercase">investigations</div>}
+          <div className="absolute left-0 right-0 top-11 card max-h-[70vh] overflow-auto scroll-thin text-sm z-50 shadow-2xl">
+            {hits.investigations.length > 0 && <div className="px-3 pt-2 pb-1 text-[10px] uppercase tracking-wider text-dim">Investigations</div>}
             {hits.investigations.map(i => (
-              <Link key={i.id} href={`/investigations/${i.id}`} className="block px-3 py-1 hover:bg-soft">
-                <span className="badge mr-2">{i.status}</span>{i.name}
+              <Link key={i.id} href={`/investigations/${i.id}`} className="flex items-center justify-between px-3 py-1.5 hover:bg-soft">
+                <span>{i.name}</span>
+                <span className="badge">{i.status}</span>
               </Link>
             ))}
-            {hits.entities.length > 0 && <div className="p-2 text-mute uppercase">entities</div>}
+            {hits.entities.length > 0 && <div className="px-3 pt-2 pb-1 text-[10px] uppercase tracking-wider text-dim">Entities</div>}
             {hits.entities.map(e => (
-              <Link key={e.id} href={`/investigations/${e.investigation_id}`} className="block px-3 py-1 hover:bg-soft">
-                <span className="badge mr-2">{e.type}</span>{e.value}
+              <Link key={e.id} href={`/investigations/${e.investigation_id}`} className="flex items-center gap-2 px-3 py-1.5 hover:bg-soft">
+                <span className="badge">{e.type}</span>
+                <span className="text-ink truncate">{e.value}</span>
               </Link>
             ))}
-            {hits.findings.length > 0 && <div className="p-2 text-mute uppercase">findings</div>}
+            {hits.findings.length > 0 && <div className="px-3 pt-2 pb-1 text-[10px] uppercase tracking-wider text-dim">Findings</div>}
             {hits.findings.map(f => (
-              <Link key={f.id} href={`/investigations/${f.investigation_id}`} className="block px-3 py-1 hover:bg-soft">
-                <span className="badge mr-2">{f.source}</span>{f.kind}
+              <Link key={f.id} href={`/investigations/${f.investigation_id}`} className="flex items-center gap-2 px-3 py-1.5 hover:bg-soft">
+                <span className="badge">{f.source}</span>
+                <span className="text-ink">{f.kind}</span>
               </Link>
             ))}
+            {!hits.investigations.length && !hits.entities.length && !hits.findings.length && (
+              <div className="px-3 py-4 text-center text-mute text-sm">no hits. try fewer characters, or more sinful ones.</div>
+            )}
           </div>
         )}
       </div>
-      <div className="flex items-center gap-4">
-        <span className="text-sm font-mono text-ink">{email}</span>
-        <button onClick={() => { setToken(null); router.push("/login"); }} className="btn">logout</button>
+      <div className="flex items-center gap-3 text-sm">
+        <span className="text-mute">{email?.split("@")[0]}</span>
+        <button onClick={() => { setToken(null); router.push("/login"); }} className="btn text-xs">Sign out</button>
       </div>
     </header>
   );

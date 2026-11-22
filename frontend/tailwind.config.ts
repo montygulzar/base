@@ -4,19 +4,22 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg:    "#0b0d12",
-        panel: "#11141b",
-        line:  "#1c212c",
-        soft:  "#242b38",
-        ink:   "#d9dde3",
-        mute:  "#8a93a3",
-        acc:   "#7dd3fc",   // cyan accent
+        bg:    "#0a0a0b",
+        panel: "#131316",
+        line:  "#232327",
+        soft:  "#1b1b1f",
+        ink:   "#f5f5f6",
+        mute:  "#8a8a92",
+        dim:   "#55555c",
+        acc:   "#ff3b3b",   // red accent, used sparingly
+        acc2:  "#ff5c5c",
         warn:  "#f59e0b",
-        err:   "#ef4444",
         ok:    "#22c55e",
+        err:   "#ff3b3b",
       },
       fontFamily: {
-        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
+        sans: ["Inter", "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
+        mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
       },
     },
   },
