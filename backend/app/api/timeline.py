@@ -1,17 +1,19 @@
 """Investigation timeline — ordered union of jobs and findings."""
 from __future__ import annotations
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from ..auth import current_user
 from ..db import get_session
-from ..models import Job, Finding
+from ..models import Job, Finding, Investigation
 
 router = APIRouter()
 
 
 @router.get("/{inv_id}")
 async def timeline(inv_id: str, _: object = Depends(current_user), db: AsyncSession = Depends(get_session)):
+    if not await db.get(Investigation, inv_id):
+        raise HTTPException(404, "investigation not found")
     jobs = (await db.execute(select(Job).where(Job.investigation_id == inv_id))).scalars().all()
     finds = (await db.execute(select(Finding).where(Finding.investigation_id == inv_id))).scalars().all()
     events = []

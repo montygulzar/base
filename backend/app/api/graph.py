@@ -11,6 +11,10 @@ router = APIRouter()
 @router.get("/{inv_id}")
 async def graph(inv_id: str, min_confidence: float = 0.0, type: str | None = None,
                 _: object = Depends(current_user), db: AsyncSession = Depends(get_session)):
+    from fastapi import HTTPException
+    from ..models import Investigation
+    if not await db.get(Investigation, inv_id):
+        raise HTTPException(404, "investigation not found")
     q_e = select(Entity).where(Entity.investigation_id == inv_id,
                                Entity.confidence >= min_confidence)
     if type:
