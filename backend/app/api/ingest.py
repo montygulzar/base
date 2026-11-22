@@ -21,6 +21,17 @@ from ..utils.validators import is_ip, is_domain, is_email
 router = APIRouter()
 CVE_RE = re.compile(r"^CVE-\d{4}-\d{4,7}$", re.I)
 HEX_RE = re.compile(r"^[a-fA-F0-9]+$")
+SNOWFLAKE_RE = re.compile(r"^\d{17,20}$")
+DISCORD_INVITE_RE = re.compile(r"^(?:https?://)?(?:discord\.gg|discord\.com/invite)/[A-Za-z0-9\-]{2,32}$", re.I)
+
+
+def _is_plausible_snowflake(s: str) -> bool:
+    try:
+        n = int(s)
+    except ValueError:
+        return False
+    ts_ms = (n >> 22) + 1420070400000  # Discord epoch
+    return 1_420_070_400_000 <= ts_ms <= 4_102_444_800_000
 
 
 class IngestIn(BaseModel):
@@ -33,6 +44,10 @@ def classify(tok: str) -> tuple[str, str] | None:
         return None
     if CVE_RE.match(t):
         return "cve", t.upper()
+    if DISCORD_INVITE_RE.match(t):
+        return "url", t
+    if SNOWFLAKE_RE.match(t) and _is_plausible_snowflake(t):
+        return "discord", t
     if t.startswith(("http://", "https://")):
         return "url", t
     if is_email(t):

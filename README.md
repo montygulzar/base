@@ -1,8 +1,9 @@
 # base — OSINT investigation platform
 
 Unified, modular, extensible OSINT collection + correlation + reporting
-platform. **105 collection modules**, **~45 integration adapters**,
-crypto subject-type extensions (BTC + ETH), one docker compose, a
+platform. **113 collection modules**, **~45 integration adapters**,
+crypto subject-type extensions (BTC + ETH), Discord ID as a first-class
+subject, one docker compose, a
 Next.js dashboard with a module catalogue + ad-hoc scratchpad + global
 search, a Python backend with investigation sharing / forking / tagging /
 templates / schedules / audit / backup-restore, STIX / MISP / GraphML /
@@ -36,6 +37,7 @@ Default admin: `admin@base.app / admin` — change it.
 | **Media / docs** | `media`, `reverse_image`, `documents`, `metagoofil` |
 | **Pivot / defence** | `typosquat`, `tld_twist`, `package_typosquat`, `bugbounty`, `tranco`, `webhook`, `opencti_push`, `taxii`, `ipapi`, `ip_api_com`, `s3_enum`, `cloud_bucket` |
 | **Crypto** | `btc_addr`, `btc_tx` (mempool.space), `eth_addr` (Blockscout) |
+| **Discord** | `discord_id` (snowflake → profile + creation date), `discord_invite` (server metadata, inviter, counts), `discord_mentions` (handle / id / invite harvester across all findings) |
 | **Vulnerability feeds** | `cve_search`, `nvd_cpe`, `epss`, `kev`, `osv`, `exploitdb` |
 | **Mail hygiene** | `smtp_banner`, `dns_auth`, `cert_expiry`, `tls_scan`, `caa` |
 | **Defensive** | `url_canon`, `onion_validate`, `web_perf`, `homograph_gen`, `sitemap` |
@@ -47,7 +49,7 @@ through the orchestrator. Missing keys emit a `source_unavailable` finding
 
 ## Subject types
 
-`domain | ip | email | username | company | url | document | media | phone | btc | eth`
+`domain | ip | email | username | company | url | document | media | phone | btc | eth | discord`
 
 ## Correlation
 

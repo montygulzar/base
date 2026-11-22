@@ -41,6 +41,7 @@ PLAN: dict[str, list[str]] = {
     "phone":    ["phone"],
     "btc":      ["btc_addr"],
     "eth":      ["eth_addr"],
+    "discord":  ["discord_id", "discord_invite", "discord_mentions"],
 }
 
 

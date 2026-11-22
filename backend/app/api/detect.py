@@ -29,4 +29,6 @@ async def detect(data: DetectIn, _=Depends(current_user)):
         if re.match(r"^\+?[0-9\s\-\(\)]{7,}$", v):
             return {"type": "phone", "value": v}
         return {"type": None, "value": v}
+
+# ingest.classify handles discord snowflakes + invite URLs before falling here.
     return {"type": c[0], "value": c[1]}
