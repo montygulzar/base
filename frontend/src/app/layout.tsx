@@ -2,6 +2,7 @@ import "../styles/globals.css";
 import type { Metadata } from "next";
 import Sidebar from "@/components/Sidebar";
 import TopBar from "@/components/TopBar";
+import Dramatist from "@/components/Dramatist";
 
 export const metadata: Metadata = { title: "base — osint platform", description: "modular osint investigation platform" };
 
@@ -15,6 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <TopBar />
             <main className="flex-1 p-6 overflow-auto scroll-thin">{children}</main>
           </div>
+          <Dramatist />
         </div>
       </body>
     </html>

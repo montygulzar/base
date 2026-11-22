@@ -136,6 +136,11 @@ pre, .log-box {
 }
 
 /* "danger" accent stripe on destructive actions */
+@keyframes fadein {
+  from { opacity: 0; transform: translateX(8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
 .danger-stripe {
   background-image: repeating-linear-gradient(
     45deg,
